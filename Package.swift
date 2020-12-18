@@ -14,12 +14,12 @@ let package = Package(
     ],
     targets: [
         .target(
-          name: "CCryptoBoringSSL",
+          name: "CAnchorBoringSSL",
           exclude: ["hash.txt", "include/boringssl_prefix_symbols_nasm.inc"]
         ),
         .target(
             name: "Anchor",
-            dependencies: ["CCryptoBoringSSL"]
+            dependencies: ["CAnchorBoringSSL"]
         ),
         .testTarget(
             name: "AnchorTests",
