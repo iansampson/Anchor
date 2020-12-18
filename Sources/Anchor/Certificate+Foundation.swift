@@ -7,7 +7,7 @@
 
 import Foundation
 
-extension Certificate {
+extension X509.Certificate {
     public init(contentsOf url: URL, format: SerializationFormat) throws {
         let data = try Data(contentsOf: url)
         try self.init(bytes: data, format: format)

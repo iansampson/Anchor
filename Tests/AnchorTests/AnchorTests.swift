@@ -42,9 +42,9 @@ final class NISTTests: XCTestCase {
 }
 
 // TODO:
-// * Make the API more Swifty (see CryptoKit).
-// * Check for memory leaks.
+// [x] Make the API more Swifty (see CryptoKit).
 // * Rename CCryptoBoringSSL to AnchorBoringSSL or something similar.
+// * Check for memory leaks.
 
 // - [x] Make API more flexible, allowing for chains of arbitrary length
 // as well as intermediate (but untrusted) certificates.

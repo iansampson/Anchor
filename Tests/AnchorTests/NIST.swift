@@ -91,11 +91,11 @@ struct NIST {
             }
             .map {
                 (
-                    certificate: try Certificate(contentsOf: $0, format: .der),
+                    certificate: try X509.Certificate(contentsOf: $0, format: .der),
                     filename: $0.lastPathComponent
                 )
             }
-            .reduce(nil) { (trust: Trust?, element: (certificate: Certificate, filename: String)) -> Trust in
+            .reduce(nil) { (trust: X509.Chain?, element: (certificate: X509.Certificate, filename: String)) -> X509.Chain in
                 let certificate = element.certificate
                 let filename = element.filename
                 
@@ -106,7 +106,7 @@ struct NIST {
                     guard filename.contains("Trust Anchor") else {
                         throw Error.missingAnchor
                     }
-                    return Trust(anchor: certificate)
+                    return X509.Chain(anchor: certificate)
                 }
             }
     }
