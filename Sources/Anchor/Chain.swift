@@ -15,9 +15,9 @@ extension X509 {
         private var _trust: _Chain
         private var chain: [Certificate]
         
-        public init(anchor: Certificate) {
-            self._trust = _Chain(anchor: anchor._certificate)
-            chain = [anchor]
+        public init(trustAnchor: Certificate) {
+            self._trust = _Chain(anchor: trustAnchor._certificate)
+            chain = [trustAnchor]
         }
         
         mutating public func validateAndAppend(certificate: Certificate) throws {

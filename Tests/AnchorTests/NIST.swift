@@ -106,7 +106,7 @@ struct NIST {
                     guard filename.contains("Trust Anchor") else {
                         throw Error.missingAnchor
                     }
-                    return X509.Chain(anchor: certificate)
+                    return X509.Chain(trustAnchor: certificate)
                 }
             }
     }
