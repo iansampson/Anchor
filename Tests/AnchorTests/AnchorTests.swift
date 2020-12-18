@@ -8,6 +8,8 @@
 import XCTest
 @testable import Anchor
 
+// https://csrc.nist.gov/Projects/pki-testing/X-509-Path-Validation-Test-Suite
+
 final class NISTTests: XCTestCase {
     func testCertificateChains() {
         NIST.tests.forEach {
@@ -40,12 +42,13 @@ final class NISTTests: XCTestCase {
 }
 
 // TODO:
-// * Make API more flexible, allowing for chains of arbitrary length
-// as well as intermediate (but untrusted) certificates.
 // * Make the API more Swifty (see CryptoKit).
-// * Consider making Certificate static, e.g. a struct.
-// * Remove app data and add anonymous tests, including failing certificates.
 // * Check for memory leaks.
-// * Commit.
 // * Rename CCryptoBoringSSL to AnchorBoringSSL or something similar.
-// * Check expiry date
+
+// - [x] Make API more flexible, allowing for chains of arbitrary length
+// as well as intermediate (but untrusted) certificates.
+// [x] Consider making Certificate static, e.g. a struct.
+// [x] Remove app data and add anonymous tests, including failing certificates.
+// [x] Commit.
+// [x] Check expiry date

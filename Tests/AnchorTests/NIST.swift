@@ -22,6 +22,27 @@ extension NIST {
         Test(10, .invalid),
         Test(11, .invalid),
         Test(12, .valid),
+        Test(13, .invalid),
+        Test(14, .invalid),
+        Test(15, .valid),
+        Test(16, .valid),
+        Test(17, .valid),
+        Test(18, .valid),
+        
+        // Anchor does *not* check for revocation
+        // so the following tests will fail.
+        
+        //Test(19, .invalid),
+        // The following path should not be successfully validated; it contains a path without revocation data:
+        
+        //Test(20, .invalid),
+        // The application must reject the certificate path if any certificate in the certificate path has been revoked. (This assertion assumes valid revocation data can be used to check for revocation, and therefore depends upon assertion AS:CP.05).
+        
+        //Test(21, .invalid)
+        // The following path should not be successfully validated; the intermediate certificate has been revoked:
+        
+        // TODO: Add remaining tests.
+        // 3.2 Intermediate Certificate Processing Tests
     ]
 }
 
