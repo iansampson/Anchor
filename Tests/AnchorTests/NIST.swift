@@ -100,7 +100,6 @@ struct NIST {
                 let filename = element.filename
                 
                 if let trust = trust {
-                    print("Validating \(filename).")
                     return try trust.validatingAndAppending(certificate: certificate)
                 } else {
                     guard filename.contains("Trust Anchor") else {

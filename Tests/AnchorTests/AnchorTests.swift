@@ -55,59 +55,22 @@ final class AnchorTests: XCTestCase {
     }
     
     func testPublicKey() {
-        do {
-            let certificate = try X509.Certificate(bytes: anchorData, format: .der)
-            let key = certificate.publicKey
-            XCTAssertNotNil(key)
-        } catch {
-            XCTFail(error.localizedDescription)
-        }
-    }
-    
-    
-    // MARK: - Codable
-    
-    /*struct CodableData: Codable {
-        let data: Data
-    }
-    
-    struct CodableCertificate: Codable {
-        let data: X509.Certificate
-    }
-    
-    func testCodable() {
-        let url = Resources.nist
-            .appendingPathComponent("test1", isDirectory: true)
-            .appendingPathComponent("Trust Anchor CP.01.01.crt")
+        let expectedKey = Data(base64Encoded: "BEUx4Zi1tOwE2hUCBFcE7U+HcnLXYTWyYRbPyIthXQoABxm6aYWN/nfKo7g54CDd1lYUFARwKDHkP3C4j9bDlLYI6ivWrmHp9ZjBL0avUpNyZuV/FOth/sUw9xRPU4EuNQ==")!
         
         do {
+            let url = Resources.apple.appendingPathComponent("AppleAppAttestAttestationRootCA.cert")
             let data = try Data(contentsOf: url)
-            let encoder = JSONEncoder()
-            let json = try encoder.encode(CodableData(data: data))
-            let certificate = try JSONDecoder().decode(CodableCertificate.self, from: json)
-            
-            //print(String(data: json, encoding: .utf8)!)
-            /*
-            
-            let json = """
-            {
-            "certificate": {
-            }
-            }
-            """
-            
-            let certificate = try JSONDecoder().decode(X509.Certificate.self, from: data)*/
-            //let encodedData = try JSONEncoder().encode(certificate)
-            //XCTAssertEqual(data, encodedData)
+            let certificate = try X509.Certificate(bytes: data, format: .pem)
+            XCTAssertEqual(certificate.publicKey, expectedKey)
         } catch {
             XCTFail(error.localizedDescription)
         }
-    }*/
+    }
 
     static var allTests = [
         ("testNISTCertificateChains", testNISTCertificateChains),
-        //("testCodable", testCodable)
-        ("testBase64", testBase64)
+        ("testBase64", testBase64),
+        ("testPublicKey", testPublicKey)
     ]
 }
 
@@ -118,6 +81,9 @@ final class AnchorTests: XCTestCase {
 // - Use DataProtocol where applicable
 // * Avoid casting between [UInt8] and Data where possible
 // or at least avoid copying
+// - [ ] Add error descriptions
+// - [ ] Document public API
+// - [ ] Get publicKey to work with RSA keys (as in the NIST examples)
 
 // - [x] Make API more flexible, allowing for chains of arbitrary length
 // as well as intermediate (but untrusted) certificates.

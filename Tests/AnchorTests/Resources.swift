@@ -9,7 +9,9 @@ import Foundation
 
 enum Resources {
     static let root: URL = Bundle.module.resourceURL!
-    static let nist: URL = Resources.root
         .appendingPathComponent("Resources", isDirectory: true)
+    static let nist: URL = Resources.root
         .appendingPathComponent("NISTX509PathValidationTestSuite", isDirectory: true)
+    static let apple: URL = Resources.root
+        .appendingPathComponent("ApplePrivatePKI", isDirectory: true)
 }

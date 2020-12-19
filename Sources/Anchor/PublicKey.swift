@@ -66,6 +66,20 @@ extension X509._Certificate {
             fatalError("Failed to map bytes from a public key")
         }
         
-        return Array(bytes)
+        let data = Array(bytes)
+        
+        // Decode DER-encoded SPKI into raw bytes.
+        do {
+            let node = try ASN1.parse(data)
+            let keyInfo = try ASN1.SubjectPublicKeyInfo(asn1Encoded: node)
+            return(Array(keyInfo.key.bytes))
+        } catch {
+            print(error.localizedDescription)
+            return nil
+        }
+        // TODO: Consider throwing errors.
+        // Either here or when you initialize the certificate.
+        // Note: this doesn’t work for some kinds of keys
+        // (including the NIST examples used in tests.)
     }
 }
