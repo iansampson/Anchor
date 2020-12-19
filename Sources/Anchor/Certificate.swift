@@ -99,3 +99,15 @@ extension X509 {
         }
     }
 }
+
+internal enum BoringSSLError: Error {
+    case unknownError
+}
+
+/// Extracts the bytes of this certificate in DER format.
+///
+/// - returns: The DER-encoded bytes for this certificate.
+/// - throws: If an error occurred while serializing the certificate.
+/*public func toDERBytes() throws -> [UInt8] {
+    return try self.withUnsafeDERCertificateBuffer { Array($0) }
+}*/

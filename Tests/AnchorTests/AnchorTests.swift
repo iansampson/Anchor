@@ -54,6 +54,16 @@ final class AnchorTests: XCTestCase {
         }
     }
     
+    func testPublicKey() {
+        do {
+            let certificate = try X509.Certificate(bytes: anchorData, format: .der)
+            let key = certificate.publicKey
+            XCTAssertNotNil(key)
+        } catch {
+            XCTFail(error.localizedDescription)
+        }
+    }
+    
     
     // MARK: - Codable
     
@@ -105,6 +115,9 @@ final class AnchorTests: XCTestCase {
 // - [ ] Fix Codable conformance
 // * Check for memory leaks.
 // * Get command line tests working: missing resources
+// - Use DataProtocol where applicable
+// * Avoid casting between [UInt8] and Data where possible
+// or at least avoid copying
 
 // - [x] Make API more flexible, allowing for chains of arbitrary length
 // as well as intermediate (but untrusted) certificates.
