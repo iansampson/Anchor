@@ -20,6 +20,7 @@ extension X509 {
         internal let _certificate: _Certificate
         // TODO: Consider renaming to Storage or Reference.
         internal let bytes: [UInt8]
+        
         public init<S>(bytes: S, format: SerializationFormat) throws where S : Sequence, S.Element == UInt8 {
             // TODO: Enforce conformance to Contiguous Bytes.
             // TODO: Avoid copying to array.

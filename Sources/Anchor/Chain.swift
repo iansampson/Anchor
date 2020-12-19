@@ -30,7 +30,8 @@ extension X509 {
             chain.append(certificate)
         }
         
-        mutating public func validateAndAppend(certificates: [Certificate]) throws {
+        mutating public func validateAndAppend<S>(certificates: S) throws where
+            S : Sequence, S.Element == Certificate {
             try certificates.forEach {
                 try validateAndAppend(certificate: $0)
             }
@@ -40,6 +41,13 @@ extension X509 {
             var trust = self
             try trust.validateAndAppend(certificate: certificate)
             // TODO: Is it possible to avoid copying self?
+            return trust
+        }
+        
+        public func validatingAndAppending<S>(certificates: S) throws -> Self where
+            S : Sequence, S.Element == Certificate {
+            var trust = self
+            try trust.validateAndAppend(certificates: certificates)
             return trust
         }
     }
