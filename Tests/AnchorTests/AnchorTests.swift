@@ -10,8 +10,15 @@ import XCTest
 
 // https://csrc.nist.gov/Projects/pki-testing/X-509-Path-Validation-Test-Suite
 
-final class NISTTests: XCTestCase {
-    func testCertificateChains() {
+final class AnchorTests: XCTestCase {
+    var anchorData: Data {
+        let url = Resources.nist
+            .appendingPathComponent("test1", isDirectory: true)
+            .appendingPathComponent("Trust Anchor CP.01.01.crt")
+        return try! Data(contentsOf: url)
+    }
+    
+    func testNISTCertificateChains() {
         NIST.tests.forEach {
             let url = Resources.nist
                 .appendingPathComponent("test\($0.number)", isDirectory: true)
@@ -35,15 +42,67 @@ final class NISTTests: XCTestCase {
             }
         }
     }
+    
+    func testBase64() {
+        do {
+            let string = anchorData.base64EncodedString()
+            let certificate = try X509.Certificate(base64Encoded: string, format: .der)
+            let encodedString = Data(certificate.bytes).base64EncodedString()
+            XCTAssertEqual(string, encodedString)
+        } catch {
+            XCTFail(error.localizedDescription)
+        }
+    }
+    
+    
+    // MARK: - Codable
+    
+    /*struct CodableData: Codable {
+        let data: Data
+    }
+    
+    struct CodableCertificate: Codable {
+        let data: X509.Certificate
+    }
+    
+    func testCodable() {
+        let url = Resources.nist
+            .appendingPathComponent("test1", isDirectory: true)
+            .appendingPathComponent("Trust Anchor CP.01.01.crt")
+        
+        do {
+            let data = try Data(contentsOf: url)
+            let encoder = JSONEncoder()
+            let json = try encoder.encode(CodableData(data: data))
+            let certificate = try JSONDecoder().decode(CodableCertificate.self, from: json)
+            
+            //print(String(data: json, encoding: .utf8)!)
+            /*
+            
+            let json = """
+            {
+            "certificate": {
+            }
+            }
+            """
+            
+            let certificate = try JSONDecoder().decode(X509.Certificate.self, from: data)*/
+            //let encodedData = try JSONEncoder().encode(certificate)
+            //XCTAssertEqual(data, encodedData)
+        } catch {
+            XCTFail(error.localizedDescription)
+        }
+    }*/
 
     static var allTests = [
-        ("testCertificateChains", testCertificateChains)
+        ("testNISTCertificateChains", testNISTCertificateChains),
+        //("testCodable", testCodable)
+        ("testBase64", testBase64)
     ]
 }
 
 // TODO:
-// [x] Make the API more Swifty (see CryptoKit).
-// * Rename CCryptoBoringSSL to AnchorBoringSSL or something similar.
+// - [ ] Fix Codable conformance
 // * Check for memory leaks.
 // * Get command line tests working: missing resources
 
@@ -53,3 +112,5 @@ final class NISTTests: XCTestCase {
 // [x] Remove app data and add anonymous tests, including failing certificates.
 // [x] Commit.
 // [x] Check expiry date
+// - [x] Make the API more Swifty (see CryptoKit).
+// - [x] Rename CCryptoBoringSSL to AnchorBoringSSL or something similar.

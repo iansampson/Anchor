@@ -19,7 +19,7 @@ extension X509 {
     public struct Certificate {
         internal let _certificate: _Certificate
         // TODO: Consider renaming to Storage or Reference.
-        private let bytes: [UInt8]
+        internal let bytes: [UInt8]
         public init<S>(bytes: S, format: SerializationFormat) throws where S : Sequence, S.Element == UInt8 {
             // TODO: Enforce conformance to Contiguous Bytes.
             // TODO: Avoid copying to array.
@@ -37,6 +37,7 @@ extension X509.Certificate {
     }
     
     public enum Error: Swift.Error {
+        case failedToDecodeBase64EncodedString
         case failedToLoadCertificate
         case failedToValidateUntrustedCertificate
     }
