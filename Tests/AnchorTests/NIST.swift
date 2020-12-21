@@ -66,7 +66,7 @@ struct NIST {
         }
     }
     
-    static func validateCertificateChain(at url: URL) throws {
+    static func validateCertificateChain(at url: URL, posixTime: Double? = nil) throws {
         let fileManager = FileManager.default
         let contents = try fileManager.contentsOfDirectory(at: url, includingPropertiesForKeys: nil)
         let _ = try contents
@@ -100,7 +100,7 @@ struct NIST {
                 let filename = element.filename
                 
                 if let trust = trust {
-                    return try trust.validatingAndAppending(certificate: certificate)
+                    return try trust.validatingAndAppending(certificate: certificate, posixTime: posixTime)
                 } else {
                     guard filename.contains("Trust Anchor") else {
                         throw Error.missingAnchor

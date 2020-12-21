@@ -20,34 +20,38 @@ extension X509 {
             chain = [trustAnchor]
         }
         
-        mutating public func validateAndAppend(certificate: Certificate) throws {
+        mutating public func validateAndAppend(certificate: Certificate, posixTime: Double? = nil) throws {
             // Copy on write.
             if !isKnownUniquelyReferenced(&_trust) {
                 _trust = _Chain(trustedChain: chain.map { $0._certificate })
                 // TODO: Reconstruct context if needed.
             }
-            try _trust.validateAndAppend(certificate: certificate._certificate)
+            
+            try _trust.validateAndAppend(
+                certificate: certificate._certificate,
+                time: posixTime.map { Int($0) }
+            )
             chain.append(certificate)
         }
         
-        mutating public func validateAndAppend<S>(certificates: S) throws where
+        mutating public func validateAndAppend<S>(certificates: S, posixTime: Double? = nil) throws where
             S : Sequence, S.Element == Certificate {
             try certificates.forEach {
-                try validateAndAppend(certificate: $0)
+                try validateAndAppend(certificate: $0, posixTime: posixTime)
             }
         }
         
-        public func validatingAndAppending(certificate: Certificate) throws -> Self {
+        public func validatingAndAppending(certificate: Certificate, posixTime: Double? = nil) throws -> Self {
             var trust = self
-            try trust.validateAndAppend(certificate: certificate)
+            try trust.validateAndAppend(certificate: certificate, posixTime: posixTime)
             // TODO: Is it possible to avoid copying self?
             return trust
         }
         
-        public func validatingAndAppending<S>(certificates: S) throws -> Self where
+        public func validatingAndAppending<S>(certificates: S, posixTime: Double? = nil) throws -> Self where
             S : Sequence, S.Element == Certificate {
             var trust = self
-            try trust.validateAndAppend(certificates: certificates)
+            try trust.validateAndAppend(certificates: certificates, posixTime: posixTime)
             return trust
         }
     }
@@ -92,7 +96,7 @@ extension X509.Chain {
             }
         }
         
-        internal func validateAndAppend(certificate: _Certificate) throws {
+        internal func validateAndAppend(certificate: _Certificate, time: Int?) throws {
             guard let context = CAnchorBoringSSL_X509_STORE_CTX_new() else {
                 fatalError()
             }
@@ -102,6 +106,10 @@ extension X509.Chain {
             }
             
             CAnchorBoringSSL_X509_STORE_CTX_init(context, store, certificate.reference, nil)
+            if let time = time {
+                CAnchorBoringSSL_X509_STORE_CTX_set_time(context, 0, time)
+            }
+            
             let result = CAnchorBoringSSL_X509_verify_cert(context)
             if result == 1 {
                 // If validation suceeds, append certificate to trust chain.
@@ -117,5 +125,4 @@ extension X509.Chain {
             CAnchorBoringSSL_X509_STORE_free(store)
         }
     }
-
 }

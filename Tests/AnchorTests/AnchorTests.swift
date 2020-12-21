@@ -66,11 +66,25 @@ final class AnchorTests: XCTestCase {
             XCTFail(error.localizedDescription)
         }
     }
-
+    
+    func testMockTime() {
+        let url = Resources.nist
+            .appendingPathComponent("test1", isDirectory: true)
+        let time: Double = 917827200 // TODO: Consider just using Int.
+        // Monday, February 1, 1999 12:00:00 AM
+        
+        do {
+            try NIST.validateCertificateChain(at: url, posixTime: time)
+        } catch {
+            XCTFail("error.localizedDescription")
+        }
+    }
+    
     static var allTests = [
         ("testNISTCertificateChains", testNISTCertificateChains),
         ("testBase64", testBase64),
-        ("testPublicKey", testPublicKey)
+        ("testPublicKey", testPublicKey),
+        ("testMockTime", testMockTime)
     ]
 }
 
@@ -84,6 +98,7 @@ final class AnchorTests: XCTestCase {
 // - [ ] Add error descriptions
 // - [ ] Document public API
 // - [ ] Get publicKey to work with RSA keys (as in the NIST examples)
+// - [ ] Provide more meaningful errors (wrapping BoringSSL errors)
 
 // - [x] Make API more flexible, allowing for chains of arbitrary length
 // as well as intermediate (but untrusted) certificates.
