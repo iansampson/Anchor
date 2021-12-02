@@ -66,12 +66,12 @@ extension X509.Chain: Equatable {
 
 // MARK: - Internal
 
-extension X509.Chain {
+extension X509 {
     internal final class _Chain {
         internal typealias Certificate = X509.Certificate
         internal typealias _Certificate = X509._Certificate
         
-        private let store: UnsafeMutablePointer<X509_STORE>
+        let store: UnsafeMutablePointer<X509_STORE>
         // TODO: Do we need to hold onto a reference to the store?
         // Could we just retain a list of certificates and reconstruct
         // the store each time?

@@ -32,11 +32,7 @@ extension X509 {
 }
 
 extension X509.Certificate {
-    public enum SerializationFormat {
-        case pem
-        case der
-    }
-    
+    // TODO: Add description
     public enum Error: Swift.Error {
         case failedToDecodeBase64EncodedString
         case failedToLoadCertificate
@@ -58,7 +54,7 @@ extension X509 {
         internal let _reference: UnsafeMutableRawPointer // <X509>
         
         // TODO: Is this reflection needed?
-        // Why just store the typed pointer?
+        // Why not just store the typed pointer?
         internal var reference: UnsafeMutablePointer<CAnchorBoringSSL.X509> {
             return self._reference.assumingMemoryBound(to: CAnchorBoringSSL.X509.self)
         }
@@ -71,7 +67,7 @@ extension X509 {
         /// Create a Certificate from a buffer of bytes in either PEM or DER format.
         // TODO: Use Data or a Sequence of UInt8 bytes instead of [UInt8].
         
-        internal convenience init(bytes: [UInt8], format: Certificate.SerializationFormat) throws {
+        internal convenience init(bytes: [UInt8], format: SerializationFormat) throws {
             let ref = bytes.withUnsafeBytes { (ptr) -> UnsafeMutablePointer<CAnchorBoringSSL.X509>? in
                 let bio = CAnchorBoringSSL_BIO_new_mem_buf(ptr.baseAddress, CInt(ptr.count))!
 
